@@ -18,19 +18,30 @@ voltage_test = test_data_matrix(2:2:end, :);
 train_data_size = size(voltage_train, 1);
 
 % 参数设置
-population_size = 500;
-epochs = 100;
+population_size = 200;
+epochs = 200;
 crossover_rate = 0.6;
 variation_rate = 0.4;
+variation_num = 2;
 elite_num = 5;   % 考虑保留一部分最优个体
 record_cost = zeros(epochs, 1);
-min_ones = 3;
+min_ones = 4;
 max_ones = 6;
 
 % 目标是找到最优的温度采样点，和对应的电压标定值，从而插值生成完整的电压标定曲线
 % 布尔数组标记温度采样点，标准任务指定了三次样条插值，据此获得曲线计算适应度
 
 population = initialize_population(population_size, length(temperture), min_ones, max_ones);
+
+%init_best_solution_1 = zeros(1, length(temperture));
+%init_best_solution_1([1, 12, 25, 48, 77, 88]) = 1;
+%init_best_solution_2 = zeros(1, length(temperture));
+%init_best_solution_2([3, 25, 35, 75, 87]) = 1;
+%population(1, :) = init_best_solution_1;
+%population(2, :) = init_best_solution_2;
+init_best_solution_3 = zeros(1, length(temperture));
+init_best_solution_3([4, 22, 41, 72, 88]) = 1;
+population(3, :) = init_best_solution_3;
 
 fitness = zeros(population_size, 1);
 cost = zeros(population_size, 1);
@@ -39,7 +50,7 @@ minist_cost = 1000000;
 % 记录连续多少次最优解没有变化 到达limit后把一定数量的种群重置
 stop_step = 0;
 stop_step_limit = 10;
-change_population_num = 50;
+change_population_num = population_size / 4;
 
 % 开始迭代
 for i = 1:epochs
@@ -78,7 +89,7 @@ for i = 1:epochs
     population = crossover(population, crossover_rate);
 
     % 变异
-    population = variation(population, variation_rate);
+    population = variation(population, variation_rate, variation_num);
 
     % 保留最优个体
     population(end-elite_num+1:end, :) = elite_population;
