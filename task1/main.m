@@ -18,12 +18,12 @@ voltage_test = test_data_matrix(2:2:end, :);
 train_data_size = size(voltage_train, 1);
 
 % 参数设置
-population_size = 200;
+population_size = 2000;
 epochs = 200;
 crossover_rate = 0.6;
-variation_rate = 0.4;
-variation_num = 2;
-elite_num = 5;   % 考虑保留一部分最优个体
+variation_rate = 0.2;
+variation_num = 1;
+elite_num = 10;   % 考虑保留一部分最优个体
 record_cost = zeros(epochs, 1);
 min_ones = 4;
 max_ones = 6;
@@ -39,9 +39,9 @@ population = initialize_population(population_size, length(temperture), min_ones
 %init_best_solution_2([3, 25, 35, 75, 87]) = 1;
 %population(1, :) = init_best_solution_1;
 %population(2, :) = init_best_solution_2;
-init_best_solution_3 = zeros(1, length(temperture));
-init_best_solution_3([4, 22, 41, 72, 88]) = 1;
-population(3, :) = init_best_solution_3;
+% init_best_solution_3 = zeros(1, length(temperture));
+% init_best_solution_3([3, 13, 25, 46, 76, 87]) = 1;
+% population(3, :) = init_best_solution_3;
 
 fitness = zeros(population_size, 1);
 cost = zeros(population_size, 1);
@@ -92,10 +92,12 @@ for i = 1:epochs
     population = variation(population, variation_rate, variation_num);
 
     % 保留最优个体
-    population(end-elite_num+1:end, :) = elite_population;
-    % 记录最优个体的选择的点的索引
-    disp(['当前最优解：', num2str(find(elite_population(1,:) == 1))]);
-
+    if elite_num
+        population(end-elite_num+1:end, :) = elite_population;
+        % 记录最优个体的选择的点的索引
+        disp(['当前最优解：', num2str(find(elite_population(1,:) == 1))]);
+    end
+    
     % 更新 stop_step
     minist_cost = min(record_cost(i), minist_cost); % 更新最小成本
     if i > 1 && record_cost(i) >= minist_cost % 当前cost没有变得更小 
