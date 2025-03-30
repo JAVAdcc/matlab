@@ -16,15 +16,15 @@ voltage_train = train_data_matrix(2:2:end, :);  % [train_data_size, 90]
 voltage_test = test_data_matrix(2:2:end, :);
 
 train_data_size = size(voltage_train, 1);
+test_data_size = size(voltage_test, 1);
 
 % 参数设置
 population_size = 2000;
 epochs = 150;
 crossover_rate = 0.6;
 variation_rate = 0.2;
-variation_num = 1;
+variation_num = 1;  % 单次变异个数
 elite_num = 10;   % 考虑保留一部分最优个体
-record_cost = zeros(epochs, 1);
 min_ones = 4;
 max_ones = 90;
 best_choice_num = 90;
@@ -43,7 +43,11 @@ population = initialize_population(population_size, length(temperture), min_ones
 % init_best_solution_3 = zeros(1, length(temperture));
 % init_best_solution_3([3, 13, 25, 46, 76, 87]) = 1;
 % population(3, :) = init_best_solution_3;
+%init_best_solution_4 = zeros(1, length(temperture));
+%init_best_solution_4([3, 12, 24, 46, 75, 87]) = 1;
+%population(3, :) = init_best_solution_4;
 
+best_population = zeros(length(temperture));
 fitness = zeros(population_size, 1);
 cost = zeros(population_size, 1);
 minist_cost = 1000000;
@@ -90,11 +94,17 @@ for i = 1:epochs
     population = crossover(population, crossover_rate);
 
     % 变异
-    population = variation(population, variation_rate, variation_num);
+    if stop_step > 5
+        population = variation(population, variation_rate + 0.3, variation_num);
+    else
+        population = variation(population, variation_rate, variation_num);
+    end
 
     % 保留最优个体
     if elite_num
         population(end-elite_num+1:end, :) = elite_population;
+        best_population = elite_population(1, :);
+        best_population_index = find(best_population == 1)- 21;
         % 记录最优个体的选择的点的索引
         best_choice = find(elite_population(1,:) == 1);
         disp(['当前最优解：', num2str(best_choice)]);
@@ -121,13 +131,17 @@ end
 
 figure;
 % 打印成本变化
+xlabel('epoch')
+ylabel('成本')
 scatter(1:epochs, record_cost, 'r');
 hold on;
 plot(1:epochs, record_cost, 'b');
 hold off;
 
-figure;
+figure
 % 打印最后一轮解空间形式
+xlabel('population')
+ylabel('适应度')
 scatter(1:population_size, fitness, 'r');
 
 toc;
