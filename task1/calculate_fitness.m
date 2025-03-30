@@ -30,10 +30,8 @@ function [fitness, cost] = calculate_fitness(population, temperture, train_data_
         cost(i) = error_cost/train_data_size + Q_i_cost;
         % disp('error_cost:');
         % disp(error_cost);
-        fitness(i) = 100 / (cost(i) - 240);
-        if fitness(i) < 0
-            fitness(i) = 0;
-        end
+        % 适应度函数使用指数形式
+        fitness(i) = 100/(cost(i)-300);
     end
 end
 

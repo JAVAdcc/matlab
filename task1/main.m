@@ -19,14 +19,15 @@ train_data_size = size(voltage_train, 1);
 
 % 参数设置
 population_size = 2000;
-epochs = 200;
+epochs = 150;
 crossover_rate = 0.6;
 variation_rate = 0.2;
 variation_num = 1;
 elite_num = 10;   % 考虑保留一部分最优个体
 record_cost = zeros(epochs, 1);
 min_ones = 4;
-max_ones = 6;
+max_ones = 90;
+best_choice_num = 90;
 
 % 目标是找到最优的温度采样点，和对应的电压标定值，从而插值生成完整的电压标定曲线
 % 布尔数组标记温度采样点，标准任务指定了三次样条插值，据此获得曲线计算适应度
@@ -50,7 +51,7 @@ minist_cost = 1000000;
 % 记录连续多少次最优解没有变化 到达limit后把一定数量的种群重置
 stop_step = 0;
 stop_step_limit = 10;
-change_population_num = population_size / 4;
+change_population_num = population_size / 2;
 
 % 开始迭代
 for i = 1:epochs
@@ -95,22 +96,26 @@ for i = 1:epochs
     if elite_num
         population(end-elite_num+1:end, :) = elite_population;
         % 记录最优个体的选择的点的索引
-        disp(['当前最优解：', num2str(find(elite_population(1,:) == 1))]);
+        best_choice = find(elite_population(1,:) == 1);
+        disp(['当前最优解：', num2str(best_choice)]);
+        [~, best_choice_num] = size(best_choice);
     end
     
     % 更新 stop_step
-    minist_cost = min(record_cost(i), minist_cost); % 更新最小成本
     if i > 1 && record_cost(i) >= minist_cost % 当前cost没有变得更小 
         stop_step = stop_step + 1;
     else
         stop_step = 0;
     end
+    minist_cost = min(record_cost(i), minist_cost); % 更新最小成本
 
     % 到达 stop_step_limit 重置一部分种群
     if stop_step >= stop_step_limit
         stop_step = 0;
         disp(['重置一部分种群', '数目为：', num2str(change_population_num)]);
-        population(1:change_population_num, :) = initialize_population(change_population_num, length(temperture), min_ones, max_ones);
+        % 生成不重复的随机索引
+        random_indices = randperm(size(population, 1) - elite_num, change_population_num);
+        population(random_indices, :) = initialize_population(change_population_num, length(temperture), best_choice_num-1, best_choice_num+1);
     end
 end
 
