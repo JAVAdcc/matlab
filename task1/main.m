@@ -129,13 +129,22 @@ for i = 1:epochs
     end
 end
 
+for i = 1:epochs
+    average_cost(i) = mean(record_cost(1:i));
+end
+
 figure;
 % 打印成本变化
+% 还需要画出平均成本
 xlabel('epoch')
 ylabel('成本')
 scatter(1:epochs, record_cost, 'r');
 hold on;
 plot(1:epochs, record_cost, 'b');
+hold on;
+plot(1:epochs, average_cost, 'g');
+hold on;
+scatter(1:epochs, average_cost, 'b');
 hold off;
 
 figure
