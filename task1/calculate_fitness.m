@@ -12,25 +12,12 @@ function [fitness, cost] = calculate_fitness(population, temperture, train_data_
         % 计算每个解的适应度
         % 包含两部分 其一是population_i的测定成本，其二是插值的误差
         Q_i_cost = Q * sum(population(i, :));  % 测定成本
-        % disp('Q_i_cost:');
-        % disp(Q_i_cost);
         error_cost = 0;
         for j = 1:train_data_size
             error = abs(squeeze(interpolation(i, j, :)).' - squeeze(temperture));  % 误差
-            % disp(size(error));
-            % disp(size(temperture));
-            % 画出error和temperture的关系图
-            % scatter(temperture, squeeze(error), 'r');
-            % hold on;
-            % scatter(temperture, zeros(size(temperture)), 'b');
-            % hold off;
-            % pause(2);
             error_cost = error_cost + single_error_cost(error);
         end
         cost(i) = error_cost/train_data_size + Q_i_cost;
-        % disp('error_cost:');
-        % disp(error_cost);
-        % 适应度函数使用指数形式
         fitness(i) = 100/(cost(i)-300);
     end
 end
