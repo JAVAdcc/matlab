@@ -105,10 +105,8 @@ for i = 1:epochs
         population(end-elite_num+1:end, :) = elite_population;
         best_population = elite_population(1, :);
         best_population_index = find(best_population == 1)- 21;
-        % 记录最优个体的选择的点的索引
-        best_choice = find(elite_population(1,:) == 1);
-        disp(['当前最优解：', num2str(best_choice)]);
-        [~, best_choice_num] = size(best_choice);
+        disp(['当前最优解：', num2str(best_population_index)]);
+        [~, best_choice_num] = size(best_population_index);
     end
     
     % 更新 stop_step
