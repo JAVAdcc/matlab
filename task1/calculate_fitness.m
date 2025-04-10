@@ -18,7 +18,7 @@ function [fitness, cost] = calculate_fitness(population, temperture, train_data_
             error_cost = error_cost + single_error_cost(error);
         end
         cost(i) = error_cost/train_data_size + Q_i_cost;
-        fitness(i) = 100/(cost(i)-300);
+        fitness(i) = 100/(cost(i)-240);
     end
 end
 

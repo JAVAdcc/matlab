@@ -37,6 +37,8 @@ population = initialize_population(population_size, length(temperture), min_ones
 best_population = zeros(length(temperture));
 fitness = zeros(population_size, 1);
 cost = zeros(population_size, 1);
+record_cost = zeros(epochs, 1);
+average_cost = zeros(epochs, 1);
 minist_cost = 1000000;
 
 % 记录连续多少次最优解没有变化 到达limit后把一定数量的种群重置
@@ -54,7 +56,7 @@ for i = 1:epochs
         for k = 1:train_data_size
             y_k = voltage_train(k, population(j,:) == 1); % 第k组数组的测定电压值 据此插值出90个点
             % 插值 方式是通过第k组电压值索引采样出对应的90个温度值 后续只需和标准的-20～69比对即可
-            interpolation(j, k, :) = interp1(y_k, x, voltage_train(k, :), 'pchip');
+            interpolation(j, k, :) = interp1(y_k, x, voltage_train(k, :), 'spline');
         end
     end
 
@@ -88,7 +90,7 @@ for i = 1:epochs
         disp(['当前最优解：', num2str(best_population_index)]);
         [~, best_choice_num] = size(best_population_index);
     end
-    
+   
     % 更新 stop_step
     if i > 1 && record_cost(i) >= minist_cost % 当前cost没有变得更小 
         stop_step = stop_step + 1;
@@ -118,7 +120,7 @@ for j = 1:size(best_population, 1)
     for k = 1:test_data_size
          y_k = voltage_test(k, best_population(j,:) == 1); % 第k组数组的测定电压值 据此插值出90个点
          % 插值 方式是通过第k组电压值索引采样出对应的90个温度值 后续只需和标准的-20～69比对即可
-         interpolation(j, k, :) = interp1(y_k, x, voltage_test(k, :), 'pchip');
+         interpolation(j, k, :) = interp1(y_k, x, voltage_test(k, :), 'spline');
     end
 end
 

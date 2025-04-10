@@ -8,10 +8,10 @@ function [new_population, elite_population] = select_population(population, fitn
 
     % 归一化适应度 用轮盘赌选择
     nomalized_fitness = fitness / sum(fitness);
-    for i = 1:length(population)
+    for i = 1:size(population, 1)
         cumulate_prob = 0;
         rand_limit = rand(1);
-        for j = 1:length(population)
+        for j = 1:size(population, 1)
             cumulate_prob = cumulate_prob + nomalized_fitness(j);
             if cumulate_prob >= rand_limit
                 new_population(i, :) = population(j, :);
