@@ -19,8 +19,8 @@ train_data_size = size(voltage_train, 1);
 test_data_size = size(voltage_test, 1);
 
 % 参数设置
-population_size = 2000;
-epochs = 100;
+population_size = 200;
+epochs = 10;
 crossover_rate = 0.6;
 variation_rate = 0.2;
 variation_num = 1;  % 单次变异个数
@@ -134,7 +134,7 @@ yyaxis left;
 scatter(1:epochs, record_cost, 'r');       % 红色散点
 hold on;
 plot(1:epochs, record_cost, 'b');         % 蓝色连线
-ylabel('最小成本（record\_cost）');       % 左轴标签
+ylabel('成本（record\_cost）');       % 左轴标签
 
 % 右侧y轴绘制average_cost
 yyaxis right;
