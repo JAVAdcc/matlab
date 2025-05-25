@@ -1,4 +1,4 @@
-function [R, MTTF] = test_node(n, Nsamlples, w, Tf)
+function [R, MTTF] = test_node(n, Nsamlples, w, time_limit)
     syslife = zeros(1, Nsamlples);      % 系统寿命
     cnt = 0; %计算超过w的次数
     for i = 1:Nsamlples
@@ -56,7 +56,7 @@ function [R, MTTF] = test_node(n, Nsamlples, w, Tf)
             % 再更新state_sys
             state_sys = cal_sys_state(state_node);
             if state_sys == 1 || state_sys == 4
-                life = min(life, Tf); % 限制life的最值
+                life = min(life, time_limit); % 限制life的最值
                 if life > w
                     cnt = cnt + 1; % 计算超过w的次数
                 end
@@ -70,14 +70,14 @@ function [R, MTTF] = test_node(n, Nsamlples, w, Tf)
 
     % 还需要修正syslife为0的情况 表示没有故障 应该设为Tf
     cnt = cnt + sum(syslife==0);  % 修正超过w的次数
-    syslife(syslife == 0) = Tf;
+    syslife(syslife == 0) = time_limit;
     
 
     % 计算并返回
     R = cnt / Nsamlples; 
     MTTF = mean(syslife);
 
-    fprintf('nodes：%d\n', n);
+    fprintf('nodes:%d\n', n);
     fprintf('MTTF=%f\n', MTTF);
     fprintf('R(ω)=%f\n\n', R);
 
