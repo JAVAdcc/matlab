@@ -4,8 +4,8 @@ function [R, MTTF] = test_node(n, Nsamlples, w, Tf)
     for i = 1:Nsamlples
 
         % 需要生成a、b器件发生故障的时间和故障类型
-        lambda_a = 1/(3.55e4);
-        lambda_b = 1/(2.65e5);
+        lambda_a = 1/(3.15e4);
+        lambda_b = 1/(2.1e5);
         a_life = exprnd(1/lambda_a, 1, n); 
         b_life = exprnd(1/lambda_b, 1, n);
         [life_order, index] = sort([a_life, b_life]); 
@@ -17,7 +17,7 @@ function [R, MTTF] = test_node(n, Nsamlples, w, Tf)
         b_err_type = zeros(1, n);
         for j = 1:n
             rand_num = rand();
-            if rand_num < 0.3
+            if rand_num < 0.25
                 a_err_type(j) = 1; 
             elseif rand_num < 0.6
                 a_err_type(j) = 2;
@@ -27,7 +27,7 @@ function [R, MTTF] = test_node(n, Nsamlples, w, Tf)
         end
         for j = 1:n
             rand_num = rand();
-            if rand_num < 0.38
+            if rand_num < 0.45
                 b_err_type(j) = 1; 
             else
                 b_err_type(j) = 2;
@@ -77,8 +77,8 @@ function [R, MTTF] = test_node(n, Nsamlples, w, Tf)
     R = cnt / Nsamlples; 
     MTTF = mean(syslife);
 
-    fprintf('模拟节点数n=%d\n', n);
-    fprintf('平均首次失效时间MTTF=%fhours\n', MTTF);
-    fprintf('系统可靠性R(ω)=%f\n\n', R);
+    fprintf('nodes：%d\n', n);
+    fprintf('MTTF=%f\n', MTTF);
+    fprintf('R(ω)=%f\n\n', R);
 
 end

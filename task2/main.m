@@ -15,7 +15,7 @@ end
 
 [R_max, R_max_I]= max(R);
 [MTTF_max, MTTF_max_I] = max(MTTF);
-fprintf('当节点数为%d时，有最大系统可靠性R(ω)=%f\n', R_max_I+3, R_max);
-fprintf('当节点数为%d时，有最长平均首次失效时间MTTF=%fhours\n', MTTF_max_I+3, MTTF_max);
+fprintf('%d个节点时有最大R(ω)=%f\n', R_max_I+3, R_max);
+fprintf('%d个节点时有最大MTTF=%fhours\n', MTTF_max_I+3, MTTF_max);
 
 toc;
